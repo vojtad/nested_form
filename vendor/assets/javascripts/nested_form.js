@@ -122,7 +122,7 @@
       hiddenField.value = "1";
 
       var field = linkElement.closest(".fields");
-      field.style.display = "hidden";
+      field.style.display = "none";
 
       var generalEvent = new CustomEvent("nested:fieldRemoved", {
         bubbles: true,
