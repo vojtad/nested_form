@@ -7,19 +7,25 @@
   NestedFormEvents.prototype = {
     addFields: function(e) {
       // Setup
-      var linkElement = e.currentTarget;
+      var linkElement = e.selectorTarget;
       var assoc = linkElement.dataset.association; // Name of child
       var blueprint = document.getElementById(linkElement.dataset.blueprintId);
       var content = blueprint.dataset.blueprint; // Fields template
 
       // Make the context correct by replacing <parents> with the generated ID
       // of each of the parent objects
-      var context = (
-        linkElement
-          .closest(".fields")
-          .closestChild("input, textarea, select")
-          .getAttribute("name") || ""
-      ).replace(/\[[a-z_]+\]$/, "");
+      var context = "";
+      var fields = linkElement.closest(".fields");
+
+      if (fields) {
+        var formTagElement = fields.closestChild("input, textarea, select");
+
+        if (formTagElement && formTagElement.hasAttribute("name")) {
+          context = formTagElement
+            .getAttribute("name")
+            .replace(/\[[a-z_]+\]$/, "");
+        }
+      }
 
       // If the parent has no inputs we need to strip off the last pair
       var current = content.match(
@@ -97,7 +103,7 @@
       return contentElement;
     },
     removeFields: function(e) {
-      var linkElement = e.currentTarget;
+      var linkElement = e.selectorTarget;
       var assoc = linkElement.dataset.association; // Name of child to be removed
 
       var hiddenField = linkElement.previousElementSibling;
@@ -145,6 +151,8 @@
         return;
       }
 
+      event.selectorTarget = selectorTarget;
+
       nestedFormEvents.addFields(event);
     },
     true
@@ -160,6 +168,8 @@
       if (!selectorTarget || !event.currentTarget.contains(selectorTarget)) {
         return;
       }
+
+      event.selectorTarget = selectorTarget;
 
       nestedFormEvents.removeFields(event);
     },
