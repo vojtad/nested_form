@@ -93,9 +93,10 @@
       contentElement = contentElement.firstElementChild;
 
       if (target) {
+        var position = linkElement.dataset.insertPosition || 'beforeend';
         document
           .querySelector(target)
-          .insertAdjacentElement("beforeend", contentElement);
+          .insertAdjacentElement(position, contentElement);
       } else {
         linkElement.insertAdjacentElement("beforebegin", contentElement);
       }
