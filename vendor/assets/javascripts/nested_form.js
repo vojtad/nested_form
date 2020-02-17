@@ -87,11 +87,25 @@
       return new Date().getTime();
     },
     insertFields: function(contentHTML, assoc, linkElement) {
-      var target = linkElement.dataset.target;
-      var contentElement = document.createElement("div");
+      var firstHTMLTag = contentHTML
+        .replace(/^[<\s]*/g, '')
+        .replace(/\r?\n|\r/g, '')
+        .replace(/^([^>\s]+).*/g, '$1');
+      var parentTag = 'div';
+
+      if (firstHTMLTag === 'tr') {
+        parentTag = 'tbody';
+      } else if (['thead', 'tbody', 'tfoot'].indexOf(firstHTMLTag) > -1) {
+        parentTag = 'table';
+      } else if (['th', 'td'].indexOf(firstHTMLTag) > -1) {
+        parentTag = 'tr';
+      }
+
+      var contentElement = document.createElement(parentTag);
       contentElement.innerHTML = contentHTML;
       contentElement = contentElement.firstElementChild;
 
+      var target = linkElement.dataset.target;
       if (target) {
         var position = linkElement.dataset.insertPosition || 'beforeend';
         document
